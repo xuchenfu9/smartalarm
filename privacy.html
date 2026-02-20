@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>隐私政策 - 智能闹钟</title>
+    <title>隐私政策 - 牛马的闹钟</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -19,46 +19,198 @@
         ul { padding-left: 20px; }
         li { margin: 8px 0; }
         .contact { background: #f5f5f7; padding: 15px; border-radius: 8px; margin-top: 20px; }
+        .lang-switch { text-align: right; margin-bottom: 20px; }
+        .lang-switch a { margin-left: 10px; color: #007AFF; text-decoration: none; }
+        .lang-switch a:hover { text-decoration: underline; }
+        .lang-content { display: none; }
+        .lang-content.active { display: block; }
     </style>
 </head>
 <body>
-    <h1>隐私政策</h1>
-    <p class="update-date">最后更新日期：2026年2月</p>
-    
-    <p>智能闹钟（以下简称「本应用」）非常重视您的隐私保护。本隐私政策旨在向您说明我们如何收集、使用和保护您的个人信息。</p>
-    
-    <h2>1. 信息收集</h2>
-    <p>本应用仅在您的设备本地存储以下信息：</p>
-    <ul>
-        <li>闹钟设置（时间、重复模式、铃声等）</li>
-        <li>休息日设置</li>
-        <li>应用偏好设置（语言、主题等）</li>
-    </ul>
-    <p><strong>本应用不会收集、上传或分享您的任何个人信息到服务器。</strong></p>
-    
-    <h2>2. 权限使用</h2>
-    <p>本应用可能需要以下权限：</p>
-    <ul>
-        <li><strong>通知权限：</strong>用于发送闹钟提醒</li>
-        <li><strong>闹钟权限（iOS 26+）：</strong>用于在静音模式下正常响铃</li>
-    </ul>
-    
-    <h2>3. 数据存储</h2>
-    <p>所有数据均存储在您的设备本地，不会上传到任何服务器。卸载应用将删除所有本地数据。</p>
-    
-    <h2>4. 第三方服务</h2>
-    <p>本应用可能会从网络获取节假日数据，但不会发送任何用户个人信息。</p>
-    
-    <h2>5. 儿童隐私</h2>
-    <p>本应用不会故意收集13岁以下儿童的个人信息。</p>
-    
-    <h2>6. 隐私政策更新</h2>
-    <p>我们可能会不时更新本隐私政策。更新后的政策将在应用内公布。</p>
-    
-    <h2>7. 联系我们</h2>
-    <div class="contact">
-        <p>如果您对本隐私政策有任何疑问，请通过以下方式联系我们：</p>
-        <p>📧 邮箱：<a href="mailto:fxcpxs@163.com">fxcpxs@163.com</a></p>
+    <div class="lang-switch">
+        <a href="#" onclick="switchLang('zh')">中文</a>
+        <a href="#" onclick="switchLang('en')">English</a>
+        <a href="#" onclick="switchLang('ja')">日本語</a>
+        <a href="#" onclick="switchLang('ko')">한국어</a>
     </div>
+
+    <!-- 中文 -->
+    <div id="zh" class="lang-content active">
+        <h1>隐私政策</h1>
+        <p class="update-date">最后更新日期：2026年2月</p>
+        
+        <p>牛马的闹钟（以下简称「本应用」）非常重视您的隐私保护。本隐私政策旨在向您说明我们如何收集、使用和保护您的个人信息。</p>
+        
+        <h2>1. 信息收集</h2>
+        <p>本应用仅在您的设备本地存储以下信息：</p>
+        <ul>
+            <li>闹钟设置（时间、重复模式、铃声等）</li>
+            <li>休息日设置</li>
+            <li>应用偏好设置（语言、主题等）</li>
+        </ul>
+        <p><strong>本应用不会收集、上传或分享您的任何个人信息到服务器。</strong></p>
+        
+        <h2>2. 权限使用</h2>
+        <p>本应用可能需要以下权限：</p>
+        <ul>
+            <li><strong>通知权限：</strong>用于发送闹钟提醒</li>
+            <li><strong>闹钟权限（iOS 26+）：</strong>用于在静音模式下正常响铃</li>
+            <li><strong>日历权限（可选）：</strong>用于读取系统日历中的节假日信息，以便智能识别工作日和休息日。本应用仅读取日历数据，不会修改或删除您的任何日历事件。</li>
+        </ul>
+        
+        <h2>3. 数据存储</h2>
+        <p>所有数据均存储在您的设备本地，不会上传到任何服务器。卸载应用将删除所有本地数据。</p>
+        
+        <h2>4. 第三方服务</h2>
+        <p>本应用可能会从网络获取节假日数据，但不会发送任何用户个人信息。</p>
+        
+        <h2>5. 儿童隐私</h2>
+        <p>本应用不会故意收集13岁以下儿童的个人信息。</p>
+        
+        <h2>6. 隐私政策更新</h2>
+        <p>我们可能会不时更新本隐私政策。更新后的政策将在应用内公布。</p>
+        
+        <h2>7. 联系我们</h2>
+        <div class="contact">
+            <p>如果您对本隐私政策有任何疑问，请通过以下方式联系我们：</p>
+            <p>📧 邮箱：<a href="mailto:fxcpxs@163.com">fxcpxs@163.com</a></p>
+        </div>
+    </div>
+
+    <!-- English -->
+    <div id="en" class="lang-content">
+        <h1>Privacy Policy</h1>
+        <p class="update-date">Last Updated: February 2026</p>
+        
+        <p>Smart Alarm (hereinafter referred to as "the App") values your privacy. This Privacy Policy explains how we collect, use, and protect your personal information.</p>
+        
+        <h2>1. Information Collection</h2>
+        <p>The App only stores the following information locally on your device:</p>
+        <ul>
+            <li>Alarm settings (time, repeat mode, ringtone, etc.)</li>
+            <li>Rest day settings</li>
+            <li>App preferences (language, theme, etc.)</li>
+        </ul>
+        <p><strong>The App does not collect, upload, or share any of your personal information to servers.</strong></p>
+        
+        <h2>2. Permissions</h2>
+        <p>The App may require the following permissions:</p>
+        <ul>
+            <li><strong>Notification Permission:</strong> To send alarm reminders</li>
+            <li><strong>Alarm Permission (iOS 26+):</strong> To ring alarms in silent mode</li>
+            <li><strong>Calendar Permission (Optional):</strong> To read holiday information from your system calendar for smart workday/rest day detection. The App only reads calendar data and will not modify or delete any of your calendar events.</li>
+        </ul>
+        
+        <h2>3. Data Storage</h2>
+        <p>All data is stored locally on your device and is not uploaded to any server. Uninstalling the App will delete all local data.</p>
+        
+        <h2>4. Third-Party Services</h2>
+        <p>The App may fetch holiday data from the internet but does not send any personal user information.</p>
+        
+        <h2>5. Children's Privacy</h2>
+        <p>The App does not knowingly collect personal information from children under 13.</p>
+        
+        <h2>6. Policy Updates</h2>
+        <p>We may update this Privacy Policy from time to time. Updated policies will be published within the App.</p>
+        
+        <h2>7. Contact Us</h2>
+        <div class="contact">
+            <p>If you have any questions about this Privacy Policy, please contact us:</p>
+            <p>📧 Email: <a href="mailto:fxcpxs@163.com">fxcpxs@163.com</a></p>
+        </div>
+    </div>
+
+    <!-- 日本語 -->
+    <div id="ja" class="lang-content">
+        <h1>プライバシーポリシー</h1>
+        <p class="update-date">最終更新日：2026年2月</p>
+        
+        <p>スマートアラーム（以下「本アプリ」）は、お客様のプライバシーを重視しています。本プライバシーポリシーは、お客様の個人情報の収集、使用、保護について説明します。</p>
+        
+        <h2>1. 情報の収集</h2>
+        <p>本アプリは、以下の情報をお客様のデバイスにローカルで保存します：</p>
+        <ul>
+            <li>アラーム設定（時間、繰り返しモード、着信音など）</li>
+            <li>休日設定</li>
+            <li>アプリ設定（言語、テーマなど）</li>
+        </ul>
+        <p><strong>本アプリは、お客様の個人情報をサーバーに収集、アップロード、共有することはありません。</strong></p>
+        
+        <h2>2. 権限の使用</h2>
+        <p>本アプリは以下の権限を必要とする場合があります：</p>
+        <ul>
+            <li><strong>通知権限：</strong>アラームリマインダーの送信に使用</li>
+            <li><strong>アラーム権限（iOS 26以降）：</strong>サイレントモードでのアラーム鳴動に使用</li>
+            <li><strong>カレンダー権限（オプション）：</strong>システムカレンダーから祝日情報を読み取り、営業日と休日をスマートに識別するために使用します。本アプリはカレンダーデータの読み取りのみを行い、カレンダーイベントの変更や削除は行いません。</li>
+        </ul>
+        
+        <h2>3. データの保存</h2>
+        <p>すべてのデータはお客様のデバイスにローカルで保存され、サーバーにアップロードされることはありません。アプリをアンインストールすると、すべてのローカルデータが削除されます。</p>
+        
+        <h2>4. サードパーティサービス</h2>
+        <p>本アプリはインターネットから祝日データを取得する場合がありますが、ユーザーの個人情報を送信することはありません。</p>
+        
+        <h2>5. 子供のプライバシー</h2>
+        <p>本アプリは、13歳未満の子供から故意に個人情報を収集することはありません。</p>
+        
+        <h2>6. ポリシーの更新</h2>
+        <p>本プライバシーポリシーは随時更新される場合があります。更新されたポリシーはアプリ内で公開されます。</p>
+        
+        <h2>7. お問い合わせ</h2>
+        <div class="contact">
+            <p>本プライバシーポリシーについてご質問がある場合は、以下までお問い合わせください：</p>
+            <p>📧 メール：<a href="mailto:fxcpxs@163.com">fxcpxs@163.com</a></p>
+        </div>
+    </div>
+
+    <!-- 한국어 -->
+    <div id="ko" class="lang-content">
+        <h1>개인정보 처리방침</h1>
+        <p class="update-date">최종 업데이트: 2026년 2월</p>
+        
+        <p>스마트 알람(이하 "본 앱")은 귀하의 개인정보를 소중히 여깁니다. 본 개인정보 처리방침은 귀하의 개인정보 수집, 사용 및 보호 방법에 대해 설명합니다.</p>
+        
+        <h2>1. 정보 수집</h2>
+        <p>본 앱은 다음 정보만 귀하의 기기에 로컬로 저장합니다:</p>
+        <ul>
+            <li>알람 설정(시간, 반복 모드, 벨소리 등)</li>
+            <li>휴일 설정</li>
+            <li>앱 환경설정(언어, 테마 등)</li>
+        </ul>
+        <p><strong>본 앱은 귀하의 개인정보를 서버에 수집, 업로드 또는 공유하지 않습니다.</strong></p>
+        
+        <h2>2. 권한 사용</h2>
+        <p>본 앱은 다음 권한이 필요할 수 있습니다:</p>
+        <ul>
+            <li><strong>알림 권한:</strong> 알람 알림 전송에 사용</li>
+            <li><strong>알람 권한(iOS 26 이상):</strong> 무음 모드에서 알람 울림에 사용</li>
+            <li><strong>캘린더 권한(선택 사항):</strong> 시스템 캘린더에서 공휴일 정보를 읽어 근무일과 휴일을 스마트하게 식별하는 데 사용됩니다. 본 앱은 캘린더 데이터만 읽으며 캘린더 이벤트를 수정하거나 삭제하지 않습니다.</li>
+        </ul>
+        
+        <h2>3. 데이터 저장</h2>
+        <p>모든 데이터는 귀하의 기기에 로컬로 저장되며 서버에 업로드되지 않습니다. 앱을 삭제하면 모든 로컬 데이터가 삭제됩니다.</p>
+        
+        <h2>4. 제3자 서비스</h2>
+        <p>본 앱은 인터넷에서 공휴일 데이터를 가져올 수 있지만 사용자 개인정보를 전송하지 않습니다.</p>
+        
+        <h2>5. 아동 개인정보</h2>
+        <p>본 앱은 13세 미만 아동의 개인정보를 고의로 수집하지 않습니다.</p>
+        
+        <h2>6. 정책 업데이트</h2>
+        <p>본 개인정보 처리방침은 수시로 업데이트될 수 있습니다. 업데이트된 정책은 앱 내에서 공개됩니다.</p>
+        
+        <h2>7. 문의하기</h2>
+        <div class="contact">
+            <p>본 개인정보 처리방침에 대해 질문이 있으시면 연락해 주세요:</p>
+            <p>📧 이메일: <a href="mailto:fxcpxs@163.com">fxcpxs@163.com</a></p>
+        </div>
+    </div>
+
+    <script>
+        function switchLang(lang) {
+            document.querySelectorAll('.lang-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(lang).classList.add('active');
+        }
+    </script>
 </body>
 </html>
