@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shift Alarm Clock | Work-Schedule Alarms, Wake Challenge, Pomodoro</title>
+    <meta name="description" content="A work-schedule aware alarm app with wake challenges, Pomodoro timer, stopwatch, and holiday-aware scheduling.">
+    <style>
+        :root {
+            color-scheme: light;
+            --bg: #f5f7fb;
+            --surface: rgba(255, 255, 255, 0.92);
+            --surface-strong: #ffffff;
+            --text: #172033;
+            --muted: #5f6b85;
+            --line: rgba(23, 32, 51, 0.08);
+            --blue: #2563eb;
+            --blue-soft: rgba(37, 99, 235, 0.10);
+            --green: #059669;
+            --green-soft: rgba(5, 150, 105, 0.10);
+            --orange: #ea580c;
+            --orange-soft: rgba(234, 88, 12, 0.10);
+            --purple: #7c3aed;
+            --purple-soft: rgba(124, 58, 237, 0.10);
+            --shadow: 0 24px 50px rgba(17, 24, 39, 0.10);
+            --radius-xl: 28px;
+            --radius-lg: 20px;
+            --radius-md: 14px;
+            --max: 1120px;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            background:
+                radial-gradient(circle at top left, rgba(37, 99, 235, 0.18), transparent 28%),
+                radial-gradient(circle at top right, rgba(124, 58, 237, 0.14), transparent 24%),
+                linear-gradient(180deg, #f8fbff 0%, var(--bg) 56%, #eef2ff 100%);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.65;
+        }
+
+        a {
+            color: var(--blue);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .page {
+            width: min(var(--max), calc(100vw - 32px));
+            margin: 0 auto;
+            padding: 28px 0 56px;
+        }
+
+        .language-bar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 12px 0 18px;
+            backdrop-filter: blur(16px);
+        }
+
+        .language-button {
+            border: 1px solid var(--line);
+            background: rgba(255,255,255,0.86);
+            color: var(--muted);
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.18s ease;
+        }
+
+        .language-button:hover,
+        .language-button.active {
+            background: var(--text);
+            border-color: var(--text);
+            color: white;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, rgba(255,255,255,0.96), rgba(248,250,255,0.90));
+            border: 1px solid rgba(255,255,255,0.7);
+            box-shadow: var(--shadow);
+            border-radius: var(--radius-xl);
+            padding: 34px;
+            display: grid;
+            gap: 28px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            color: var(--blue);
+            background: var(--blue-soft);
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.9fr);
+            gap: 26px;
+            align-items: stretch;
+        }
+
+        h1 {
+            margin: 14px 0 14px;
+            font-size: clamp(34px, 5vw, 58px);
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+        }
+
+        .subtitle {
+            font-size: clamp(18px, 2vw, 21px);
+            color: var(--muted);
+            max-width: 760px;
+            margin-bottom: 22px;
+        }
+
+        .hero-points {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .point-card,
+        .section-card,
+        .quick-check,
+        .feature-card,
+        .audience-card,
+        .footer-card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 14px 34px rgba(17, 24, 39, 0.05);
+        }
+
+        .point-card {
+            padding: 16px;
+        }
+
+        .point-card strong {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 15px;
+        }
+
+        .point-card span {
+            display: block;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .quick-check {
+            padding: 22px;
+            background: linear-gradient(180deg, rgba(37, 99, 235, 0.08), rgba(255, 255, 255, 0.9));
+        }
+
+        .quick-check h2,
+        .section-title {
+            margin: 0 0 10px;
+            font-size: 24px;
+            letter-spacing: -0.02em;
+        }
+
+        .quick-check p,
+        .section-intro,
+        .feature-card p,
+        .audience-card p,
+        .footer-card p,
+        .footer-card li {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .review-list {
+            margin: 18px 0 0;
+            padding: 0;
+            list-style: none;
+            display: grid;
+            gap: 12px;
+        }
+
+        .review-list li {
+            display: grid;
+            grid-template-columns: 28px minmax(0, 1fr);
+            gap: 12px;
+            align-items: start;
+        }
+
+        .review-list .step {
+            width: 28px;
+            height: 28px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: white;
+            background: var(--blue);
+            margin-top: 2px;
+        }
+
+        .section {
+            margin-top: 28px;
+        }
+
+        .section-card {
+            padding: 28px;
+        }
+
+        .feature-grid,
+        .audience-grid,
+        .footer-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .feature-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            margin-top: 18px;
+        }
+
+        .feature-card {
+            padding: 20px;
+        }
+
+        .feature-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 999px;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+
+        .feature-tag.blue { color: var(--blue); background: var(--blue-soft); }
+        .feature-tag.orange { color: var(--orange); background: var(--orange-soft); }
+        .feature-tag.purple { color: var(--purple); background: var(--purple-soft); }
+        .feature-tag.green { color: var(--green); background: var(--green-soft); }
+
+        .feature-card h3,
+        .audience-card h3,
+        .footer-card h3 {
+            margin: 0 0 8px;
+            font-size: 18px;
+            letter-spacing: -0.02em;
+        }
+
+        .audience-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            margin-top: 18px;
+        }
+
+        .audience-card,
+        .footer-card {
+            padding: 20px;
+        }
+
+        .footer-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            margin-top: 18px;
+        }
+
+        .footer-card ul {
+            margin: 10px 0 0;
+            padding-left: 18px;
+        }
+
+        .support-note {
+            margin-top: 18px;
+            padding: 16px 18px;
+            border-radius: var(--radius-md);
+            background: rgba(15, 23, 42, 0.04);
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .mono {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 13px;
+            color: #334155;
+            word-break: break-word;
+        }
+
+        @media (max-width: 920px) {
+            .hero-grid,
+            .feature-grid,
+            .audience-grid,
+            .footer-grid,
+            .hero-points {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding: 24px;
+            }
+
+            .section-card {
+                padding: 22px;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .page {
+                width: min(var(--max), calc(100vw - 20px));
+                padding-top: 16px;
+            }
+
+            .language-bar {
+                justify-content: flex-start;
+                gap: 8px;
+            }
+
+            .language-button {
+                font-size: 13px;
+                padding: 8px 12px;
+            }
+
+            h1 {
+                font-size: 34px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="language-bar" aria-label="Language selector">
+            <button class="language-button active" data-lang="en">English</button>
+            <button class="language-button" data-lang="zh">中文</button>
+            <button class="language-button" data-lang="ja">日本語</button>
+            <button class="language-button" data-lang="ko">한국어</button>
+        </div>
+
+        <section class="hero">
+            <div class="hero-grid">
+                <div>
+                    <div class="eyebrow" data-i18n="eyebrow"></div>
+                    <h1 data-i18n="hero_title"></h1>
+                    <p class="subtitle" data-i18n="hero_subtitle"></p>
+                    <div class="hero-points">
+                        <div class="point-card">
+                            <strong data-i18n="hero_point_1_title"></strong>
+                            <span data-i18n="hero_point_1_text"></span>
+                        </div>
+                        <div class="point-card">
+                            <strong data-i18n="hero_point_2_title"></strong>
+                            <span data-i18n="hero_point_2_text"></span>
+                        </div>
+                        <div class="point-card">
+                            <strong data-i18n="hero_point_3_title"></strong>
+                            <span data-i18n="hero_point_3_text"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="quick-check">
+                    <h2 data-i18n="review_title"></h2>
+                    <p data-i18n="review_intro"></p>
+                    <ol class="review-list">
+                        <li>
+                            <span class="step">1</span>
+                            <div data-i18n="review_step_1"></div>
+                        </li>
+                        <li>
+                            <span class="step">2</span>
+                            <div data-i18n="review_step_2"></div>
+                        </li>
+                        <li>
+                            <span class="step">3</span>
+                            <div data-i18n="review_step_3"></div>
+                        </li>
+                        <li>
+                            <span class="step">4</span>
+                            <div data-i18n="review_step_4"></div>
+                        </li>
+                    </ol>
+                    <div class="support-note" data-i18n="review_note"></div>
+                </aside>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-card">
+                <h2 class="section-title" data-i18n="difference_title"></h2>
+                <p class="section-intro" data-i18n="difference_intro"></p>
+                <div class="feature-grid">
+                    <article class="feature-card">
+                        <div class="feature-tag blue" data-i18n="feature_1_tag"></div>
+                        <h3 data-i18n="feature_1_title"></h3>
+                        <p data-i18n="feature_1_text"></p>
+                    </article>
+                    <article class="feature-card">
+                        <div class="feature-tag orange" data-i18n="feature_2_tag"></div>
+                        <h3 data-i18n="feature_2_title"></h3>
+                        <p data-i18n="feature_2_text"></p>
+                    </article>
+                    <article class="feature-card">
+                        <div class="feature-tag purple" data-i18n="feature_3_tag"></div>
+                        <h3 data-i18n="feature_3_title"></h3>
+                        <p data-i18n="feature_3_text"></p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-card">
+                <h2 class="section-title" data-i18n="audience_title"></h2>
+                <p class="section-intro" data-i18n="audience_intro"></p>
+                <div class="audience-grid">
+                    <article class="audience-card">
+                        <h3 data-i18n="audience_1_title"></h3>
+                        <p data-i18n="audience_1_text"></p>
+                    </article>
+                    <article class="audience-card">
+                        <h3 data-i18n="audience_2_title"></h3>
+                        <p data-i18n="audience_2_text"></p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-card">
+                <h2 class="section-title" data-i18n="footer_title"></h2>
+                <p class="section-intro" data-i18n="footer_intro"></p>
+                <div class="footer-grid">
+                    <article class="footer-card">
+                        <h3 data-i18n="footer_links_title"></h3>
+                        <ul>
+                            <li><a href="privacy.html" data-i18n="footer_link_privacy"></a></li>
+                            <li><a href="terms.html" data-i18n="footer_link_terms"></a></li>
+                            <li><a href="support.html" data-i18n="footer_link_support"></a></li>
+                        </ul>
+                    </article>
+                    <article class="footer-card">
+                        <h3 data-i18n="footer_contact_title"></h3>
+                        <p data-i18n="footer_contact_text"></p>
+                        <p class="mono">fxcpxs@163.com</p>
+                    </article>
+                    <article class="footer-card">
+                        <h3 data-i18n="footer_review_title"></h3>
+                        <p data-i18n="footer_review_text"></p>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const translations = {
+            en: {
+                eyebrow: 'For App Review · Multi-language product overview',
+                hero_title: 'Shift Alarm Clock for Work Schedules, Wake Challenges, and Focus Timing',
+                hero_subtitle: 'This app is not a standard alarm template. It combines work-schedule aware alarms, a post-dismiss wake challenge, and a separate Pomodoro & stopwatch module in one product.',
+                hero_point_1_title: 'Work-schedule aware',
+                hero_point_1_text: 'Smart workdays, rest days, holidays, alternate weeks, and work cycles.',
+                hero_point_2_title: 'Wake challenge after dismiss',
+                hero_point_2_text: 'Slacker Mode requires solving a 3-digit addition challenge after dismissal.',
+                hero_point_3_title: 'Pomodoro & stopwatch',
+                hero_point_3_text: 'A dedicated timing center with focus rounds, break rounds, and elapsed timing.',
+                review_title: 'Quick Review Path',
+                review_intro: 'A reviewer can verify the main differences in a few minutes without creating an account.',
+                review_step_1: 'Launch the app and go through first-launch onboarding. Choose a Worker Mode on the final onboarding screen.',
+                review_step_2: 'Open the Alarm tab. The home screen shows the Worker Mode card prominently at the top.',
+                review_step_3: 'Set a short test alarm in Slacker Mode. Dismiss the alarm, then return to the app to see the wake challenge. If it is not solved, the app alerts again every 1 minute.',
+                review_step_4: 'Open the Timer tab to test Pomodoro and Stopwatch. Pomodoro supports focus/rest rounds and alert delivery through AlarmKit or local notifications.',
+                review_note: 'No login, account, or server data is required. All user data is stored locally on device.',
+                difference_title: 'Why This App Is Different',
+                difference_intro: 'The product is designed for users with changing work schedules and morning compliance needs, not as a generic alarm clone.',
+                feature_1_tag: 'Alarm Logic',
+                feature_1_title: 'Work-Schedule Aware Alarms',
+                feature_1_text: 'Users can combine smart workdays/rest days with holiday overrides, alternate-week patterns, and work-cycle patterns such as “work X days, rest Y days.”',
+                feature_2_tag: 'Wake Challenge',
+                feature_2_title: 'Worker Mode Changes Alarm Behavior',
+                feature_2_text: 'In Disciplined Mode, alarms behave normally. In Slacker Mode, dismissing an alarm is not the end: the user must return to the app and solve a 3-digit addition challenge, or the app alerts again every minute until completion.',
+                feature_3_tag: 'Timing Center',
+                feature_3_title: 'Pomodoro and Stopwatch in a Separate Module',
+                feature_3_text: 'The app now includes a dedicated timer section for Pomodoro focus sessions and a stopwatch, expanding the product beyond alarms into daily focus and timing workflows.',
+                audience_title: 'Who It Is For',
+                audience_intro: 'The feature set is intentionally built around work patterns and behavior, not just simple wake-up reminders.',
+                audience_1_title: 'Shift workers and irregular schedules',
+                audience_1_text: 'Useful for alternating weekends, holiday-adjusted workdays, custom rest days, and cyclical schedules that a generic alarm app typically does not handle well.',
+                audience_2_title: 'Users who need stronger wake-up enforcement',
+                audience_2_text: 'Worker Mode adds a behavioral layer after alarm dismissal, and the Timer tab supports focus routines through Pomodoro and stopwatch workflows.',
+                footer_title: 'Support and Review Information',
+                footer_intro: 'If needed, App Review can use the links below for supporting documents and product context.',
+                footer_links_title: 'Links',
+                footer_link_privacy: 'Privacy Policy',
+                footer_link_terms: 'Terms of Use',
+                footer_link_support: 'Support',
+                footer_contact_title: 'Contact',
+                footer_contact_text: 'For product questions or review clarifications, contact us at:',
+                footer_review_title: 'Review Context',
+                footer_review_text: 'Primary language can be English, but this page also provides clear switching to Chinese, Japanese, and Korean for easier verification.'
+            },
+            zh: {
+                eyebrow: '用于 App 审核 · 多语言产品说明页',
+                hero_title: '面向工作制、起床挑战与专注计时的闹钟应用',
+                hero_subtitle: '这不是普通闹钟模板，而是把工作制感知闹钟、关闭后起床挑战、番茄钟与正计时整合到同一产品中的作息工具。',
+                hero_point_1_title: '工作制作息识别',
+                hero_point_1_text: '支持智能工作日、休息日、节假日、大小周和做几休几。',
+                hero_point_2_title: '关闭后起床挑战',
+                hero_point_2_text: '摸鱼牛马模式下，关闭闹钟后必须回到 App 做三位数加法题。',
+                hero_point_3_title: '番茄钟与正计时',
+                hero_point_3_text: '独立计时中心支持专注轮次、休息轮次和累计计时。',
+                review_title: '审核快速验证路径',
+                review_intro: '审核员无需注册账号，几分钟内即可验证这款 App 的主要差异化。',
+                review_step_1: '首次启动 App，完成新手引导，并在最后一页选择牛马模式。',
+                review_step_2: '进入闹钟页，首页顶部会显眼展示牛马模式卡片与说明。',
+                review_step_3: '在摸鱼牛马模式下设置一个短时间测试闹钟。关闭闹钟后，再回到 App 即会出现起床挑战；若不完成，App 会每隔 1 分钟再次提醒。',
+                review_step_4: '进入计时页，可测试番茄钟与正计时。番茄钟支持专注/休息轮次，并可通过 AlarmKit 或本地通知提醒。',
+                review_note: '不需要登录，也不依赖服务器数据。所有用户数据均保存在本地设备。',
+                difference_title: '为什么它不是普通闹钟',
+                difference_intro: '这个产品是为复杂工作制和“起床执行力”场景设计的，而不是简单的模板型提醒工具。',
+                feature_1_tag: '闹钟逻辑',
+                feature_1_title: '工作制感知闹钟',
+                feature_1_text: '支持智能工作日/休息日、节假日与调休识别、大小周、做几休几等复杂工作制场景，而不是固定周重复。',
+                feature_2_tag: '起床约束',
+                feature_2_title: '牛马模式改变闹钟关闭后的行为',
+                feature_2_text: '自律牛马模式下可正常关闭闹钟；摸鱼牛马模式下，关闭闹钟后仍需回到 App 完成三位数加法挑战，否则会每 1 分钟再次提醒。',
+                feature_3_tag: '计时中心',
+                feature_3_title: '独立番茄钟与正计时模块',
+                feature_3_text: 'App 已不再是单一闹钟页面，而是增加了独立计时中心，用于番茄专注流程与累计计时。',
+                audience_title: '适用人群',
+                audience_intro: '这些功能都是围绕真实工作与作息行为设计的，而不只是简单叫醒。',
+                audience_1_title: '排班、倒班、大小周用户',
+                audience_1_text: '适合存在节假日调休、大小周、轮班、做几休几等非标准工作制的用户。',
+                audience_2_title: '需要更强起床约束的人',
+                audience_2_text: '牛马模式在关闭闹钟后继续增加行为约束，而计时页则为专注和执行提供番茄钟与正计时。',
+                footer_title: '支持与审核信息',
+                footer_intro: '如需进一步核对信息，可通过以下链接查看支持与合规页面。',
+                footer_links_title: '相关链接',
+                footer_link_privacy: '隐私政策',
+                footer_link_terms: '使用条款',
+                footer_link_support: '技术支持',
+                footer_contact_title: '联系方式',
+                footer_contact_text: '如有产品问题或审核说明需求，可通过以下邮箱联系：',
+                footer_review_title: '审核备注',
+                footer_review_text: '本页默认英文展示，并在显眼位置支持中文、日本語、한국어切换，便于审核快速理解。'
+            },
+            ja: {
+                eyebrow: 'App Review 向け · 多言語プロダクト概要',
+                hero_title: '勤務シフト・起床チャレンジ・集中タイマーに対応したアラームアプリ',
+                hero_subtitle: 'これは一般的なアラームのテンプレートではありません。勤務スケジュール対応アラーム、停止後の起床チャレンジ、ポモドーロとストップウォッチを 1 つの製品に統合しています。',
+                hero_point_1_title: '勤務スケジュール対応',
+                hero_point_1_text: '勤務日、休息日、祝日、隔週勤務、勤務サイクルに対応します。',
+                hero_point_2_title: '停止後の起床チャレンジ',
+                hero_point_2_text: '「Slacker Mode」では、アラーム停止後にアプリへ戻って 3 桁の足し算を解く必要があります。',
+                hero_point_3_title: 'ポモドーロとストップウォッチ',
+                hero_point_3_text: '集中ラウンド、休憩ラウンド、経過時間を管理できる独立したタイマー画面があります。',
+                review_title: 'レビュー確認手順',
+                review_intro: 'アカウント作成なしで、数分で主要な差別化ポイントを確認できます。',
+                review_step_1: '初回起動時のオンボーディングを進め、最後の画面で Worker Mode を選択します。',
+                review_step_2: 'Alarm タブを開くと、ホーム上部に Worker Mode カードが大きく表示されます。',
+                review_step_3: 'Slacker Mode で短いテストアラームを設定します。停止後にアプリへ戻ると起床チャレンジが表示され、未完了の場合は 1 分ごとに再通知されます。',
+                review_step_4: 'Timer タブを開くと、ポモドーロとストップウォッチを確認できます。ポモドーロは集中/休憩ラウンドと通知に対応します。',
+                review_note: 'ログインやサーバー連携は不要です。データは端末内に保存されます。',
+                difference_title: '一般的なアラームと異なる点',
+                difference_intro: 'このアプリは、複雑な勤務形態と起床行動の管理を目的として設計されています。',
+                feature_1_tag: 'アラームロジック',
+                feature_1_title: '勤務形態を考慮したアラーム',
+                feature_1_text: '勤務日/休息日、祝日補正、隔週勤務、勤務サイクルなど、一般的なアラームでは扱いにくいパターンに対応します。',
+                feature_2_tag: '起床チャレンジ',
+                feature_2_title: 'Worker Mode による挙動変更',
+                feature_2_text: 'Disciplined Mode では通常の停止が可能です。Slacker Mode では停止後に 3 桁の足し算を解く必要があり、未完了なら 1 分ごとに再通知されます。',
+                feature_3_tag: 'タイミングセンター',
+                feature_3_title: '独立したポモドーロ / ストップウォッチ',
+                feature_3_text: 'アラーム以外に、集中セッションと経過時間を管理するための独立したタイマー機能を備えています。',
+                audience_title: '想定ユーザー',
+                audience_intro: '単なる目覚ましではなく、勤務パターンと行動習慣に合わせた設計です。',
+                audience_1_title: 'シフト勤務・変則勤務のユーザー',
+                audience_1_text: '祝日調整、隔週勤務、交代制勤務、勤務サイクルなどに適しています。',
+                audience_2_title: 'より強い起床管理が必要なユーザー',
+                audience_2_text: 'Worker Mode は停止後にも行動制約を追加し、Timer タブは集中ルーティンを支援します。',
+                footer_title: 'サポートとレビュー情報',
+                footer_intro: '必要に応じて、以下のリンクからサポート情報とポリシーを確認できます。',
+                footer_links_title: 'リンク',
+                footer_link_privacy: 'プライバシーポリシー',
+                footer_link_terms: '利用規約',
+                footer_link_support: 'サポート',
+                footer_contact_title: '連絡先',
+                footer_contact_text: '製品やレビューに関するお問い合わせはこちら：',
+                footer_review_title: 'レビュー向け補足',
+                footer_review_text: 'このページは英語を既定表示にしつつ、日本語・中国語・韓国語にも明確に切り替え可能です。'
+            },
+            ko: {
+                eyebrow: 'App Review용 · 다국어 제품 안내',
+                hero_title: '근무 일정, 기상 챌린지, 집중 타이머를 위한 알람 앱',
+                hero_subtitle: '이 앱은 일반적인 알람 템플릿이 아닙니다. 근무 일정 인식 알람, 해제 후 기상 챌린지, 포모도로와 스톱워치를 하나의 제품으로 통합했습니다.',
+                hero_point_1_title: '근무 일정 인식',
+                hero_point_1_text: '근무일, 휴식일, 공휴일, 격주 근무, 근무 주기를 지원합니다.',
+                hero_point_2_title: '해제 후 기상 챌린지',
+                hero_point_2_text: 'Slacker Mode에서는 알람 해제 후 앱으로 돌아와 세 자리 덧셈 문제를 풀어야 합니다.',
+                hero_point_3_title: '포모도로 & 스톱워치',
+                hero_point_3_text: '집중/휴식 라운드와 경과 시간을 관리하는 별도의 타이머 화면이 있습니다.',
+                review_title: '빠른 검토 경로',
+                review_intro: '계정 생성 없이 몇 분 안에 핵심 차별점을 확인할 수 있습니다.',
+                review_step_1: '앱을 처음 실행하고 온보딩을 진행한 뒤 마지막 화면에서 Worker Mode를 선택합니다.',
+                review_step_2: 'Alarm 탭을 열면 홈 상단에 Worker Mode 카드가 눈에 띄게 표시됩니다.',
+                review_step_3: 'Slacker Mode에서 짧은 테스트 알람을 설정합니다. 알람을 끈 뒤 앱으로 돌아오면 기상 챌린지가 나타나며, 완료하지 않으면 1분마다 다시 알림이 울립니다.',
+                review_step_4: 'Timer 탭에서 포모도로와 스톱워치를 확인할 수 있습니다. 포모도로는 집중/휴식 라운드와 알림 전달을 지원합니다.',
+                review_note: '로그인이나 서버 데이터가 필요하지 않습니다. 모든 데이터는 기기 로컬에 저장됩니다.',
+                difference_title: '일반 알람 앱과 다른 점',
+                difference_intro: '이 앱은 복잡한 근무 패턴과 기상 행동 관리에 맞춰 설계되었습니다.',
+                feature_1_tag: '알람 로직',
+                feature_1_title: '근무 일정 인식 알람',
+                feature_1_text: '근무일/휴식일, 공휴일 보정, 격주 패턴, 근무 주기 등 일반 알람 앱이 다루기 어려운 시나리오를 지원합니다.',
+                feature_2_tag: '기상 챌린지',
+                feature_2_title: 'Worker Mode가 알람 종료 후 동작을 바꿉니다',
+                feature_2_text: 'Disciplined Mode에서는 일반적으로 알람을 끌 수 있습니다. Slacker Mode에서는 세 자리 덧셈을 풀어야 하며, 완료하지 않으면 1분마다 다시 알립니다.',
+                feature_3_tag: '타이밍 센터',
+                feature_3_title: '독립된 포모도로 / 스톱워치 모듈',
+                feature_3_text: '알람 외에도 집중 세션과 누적 시간을 관리하는 별도의 타이머 기능이 있습니다.',
+                audience_title: '대상 사용자',
+                audience_intro: '단순한 기상 알림이 아니라 근무 패턴과 행동 흐름에 맞춘 설계입니다.',
+                audience_1_title: '교대근무 및 비정형 일정 사용자',
+                audience_1_text: '공휴일 보정, 격주 근무, 교대 근무, 근무 주기 등 다양한 일정 패턴에 적합합니다.',
+                audience_2_title: '더 강한 기상 통제가 필요한 사용자',
+                audience_2_text: 'Worker Mode는 알람 종료 후에도 행동 제약을 추가하고, Timer 탭은 집중 루틴을 지원합니다.',
+                footer_title: '지원 및 검토 정보',
+                footer_intro: '필요한 경우 아래 링크에서 지원 문서와 정책 페이지를 확인할 수 있습니다.',
+                footer_links_title: '링크',
+                footer_link_privacy: '개인정보 처리방침',
+                footer_link_terms: '이용약관',
+                footer_link_support: '지원',
+                footer_contact_title: '연락처',
+                footer_contact_text: '제품 또는 검토 관련 문의:',
+                footer_review_title: '검토 참고',
+                footer_review_text: '이 페이지는 영어를 기본으로 하며, 중국어·일본어·한국어 전환을 눈에 띄게 제공합니다.'
+            }
+        };
+
+        const html = document.documentElement;
+        const buttons = Array.from(document.querySelectorAll('.language-button'));
+        const targets = Array.from(document.querySelectorAll('[data-i18n]'));
+
+        function applyLanguage(lang) {
+            const pack = translations[lang] || translations.en;
+            html.lang = lang === 'zh' ? 'zh-CN' : lang;
+            targets.forEach((el) => {
+                const key = el.dataset.i18n;
+                if (pack[key]) {
+                    el.textContent = pack[key];
+                }
+            });
+            buttons.forEach((button) => {
+                button.classList.toggle('active', button.dataset.lang === lang);
+            });
+            try {
+                localStorage.setItem('marketing-lang', lang);
+            } catch (_) {}
+        }
+
+        buttons.forEach((button) => {
+            button.addEventListener('click', () => applyLanguage(button.dataset.lang));
+        });
+
+        const stored = (() => {
+            try {
+                return localStorage.getItem('marketing-lang');
+            } catch (_) {
+                return null;
+            }
+        })();
+
+        applyLanguage(stored && translations[stored] ? stored : 'en');
+    </script>
+</body>
+</html>
